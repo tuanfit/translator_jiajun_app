@@ -116,7 +116,9 @@ class _TranslatorPageState extends State<TranslatorPage> {
       },
     );
   }
-
+  String getText(String vi, String zh) {
+    return reverseMode ? vi : zh;
+  }
   void stopListening() {
     speech.stop();
     silenceTimer?.cancel();
@@ -191,8 +193,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
       items: [5, 10, 30, 60]
           .map((e) => DropdownMenuItem(
         value: e,
-        child: Text("Stop sau $e giây"),
-      ))
+        child: Text(getText("Stop sau $e giây", "$e 秒后停止")),      ))
           .toList(),
       onChanged: (value) {
         setState(() {
@@ -280,8 +281,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
                             controller: controller,
                             maxLines: null,
                             decoration: InputDecoration(
-                              hintText: "Nhập hoặc nói...",
-                              border: InputBorder.none,
+                              hintText: getText("Nhập hoặc nói...", "请输入或说话..."),                              border: InputBorder.none,
                               contentPadding: EdgeInsets.all(12),
                               suffixIcon: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -314,12 +314,12 @@ class _TranslatorPageState extends State<TranslatorPage> {
                         SizedBox(height: 10),
 
                         if (inputPinyin.isNotEmpty)
-                          Text("📘 Pinyin: $inputPinyin"),
+                          Text(getText("📘 Pinyin: $inputPinyin", "📘 拼音: $inputPinyin")),
 
                         SizedBox(height: 20),
 
                         Text(
-                          "🌏 Translation:",
+                          getText("🌏 Dịch:", "🌏 翻译:"),
                           style: TextStyle(fontSize: 18),
                         ),
 
@@ -379,6 +379,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: isListening ? Colors.red : Colors.green,
                       padding: EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -392,7 +393,9 @@ class _TranslatorPageState extends State<TranslatorPage> {
                       }
                     },
                     child: Text(
-                      isListening ? "Stop Mic" : "Start Mic",
+                      isListening
+                          ? getText("Stop Mic", "停止录音")
+                          : getText("Start Mic", "开始录音"),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),
